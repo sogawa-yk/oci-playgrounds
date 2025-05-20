@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  db:
+    build: ./db
+    container_name: ephemeral-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: testdb
+      MYSQL_USER: testuser
+      MYSQL_PASSWORD: testpass
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u$$MYSQL_USER", "-p$$MYSQL_PASSWORD"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    # 意図的にボリュームマウントを行わない
+    # これにより、コンテナ停止時にデータが失われることを確認できる
+
+  app:
+    build: ./app
+    container_name: ephemeral-app
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+    # アプリケーションもエフェメラルストレージのみを使用
