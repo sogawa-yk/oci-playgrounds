@@ -1,0 +1,11 @@
+# 表記と構造を安定化（末尾ドット・TTL 明示・順序は不問）
+- name: www.example.com.
+  type: A
+  ttl: 300
+  rdata: ["1.2.3.4", "1.2.3.5"]
+
+- name: example.com.
+  type: TXT
+  ttl: 300
+  rdata:
+    - "v=spf1 include:_spf.example.net ~all"
