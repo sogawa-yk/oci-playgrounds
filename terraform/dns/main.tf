@@ -43,5 +43,14 @@ resource "oci_dns_rrset" "good" {
   zone_name_or_id = oci_dns_zone.zone.id
   domain          = each.value.name
   rtype           = each.value.type
-  items           = each.value.items
+
+  dynamic "items" {
+    for_each = each.value.items
+    content {
+      domain = items.value.domain
+      rtype  = items.value.rtype
+      ttl    = items.value.ttl
+      rdata  = items.value.rdata
+    }
+  }
 }
