@@ -1,4 +1,5 @@
 variable "records_yaml" { type = string }
+variable "compartment_ocid" { type = string }
 
 locals {
   raw = yamldecode(file(var.records_yaml))
