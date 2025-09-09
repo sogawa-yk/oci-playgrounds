@@ -1,0 +1,10 @@
+title: "Terraform検証"
+description: "検証用のスタック。"
+schemaVersion: 1.1.0
+version: "20190304"
+
+variables:
+  # Terraform Provider Variables
+  records_yaml:
+    type: file
+    description: "DNSレコード情報ファイル"
