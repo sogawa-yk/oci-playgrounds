@@ -1,20 +1,30 @@
-variable "records_yaml" { type = string }
 variable "compartment_ocid" { type = string }
 
-locals {
-  raw = yamldecode(file(var.records_yaml))
+variable "records_yaml" {
+  type        = string
+  description = "YAMLファイルのパス、または YAML 文字列（base64でも可）"
+}
 
-  # 1) 正規化: 末尾ドット・大文字化・TTLデフォルト・trim/sort
+locals {
+  # 1) var.records_yaml が実在パスなら file()、そうでなければそのまま使う
+  yaml_raw_string = fileexists(var.records_yaml) ? file(var.records_yaml) : var.records_yaml
+
+  # 2) base64 ならデコード、そうでなければそのまま
+  yaml_plain = try(base64decode(local.yaml_raw_string), local.yaml_raw_string)
+
+  # 3) YAML をデコード
+  raw = yamldecode(local.yaml_plain)
+
+  # 以降は「良い例」と同じ正規化
   canonical = [
     for r in local.raw : {
       name  = endswith(r.name, ".") ? r.name : "${r.name}."
       type  = upper(r.type)
       ttl   = try(r.ttl, 300)
-      rdata = sort([for v in r.rdata : trim(v)]) # 並びを固定
+      rdata = sort([for v in r.rdata : trim(v)])
     }
   ]
 
-  # 2) (name, type) ごとに RRset を形成
   rrsets = {
     for r in local.canonical :
     "${r.name}|${r.type}" => {
@@ -36,10 +46,9 @@ resource "oci_dns_zone" "zone" {
   compartment_id = var.compartment_ocid
 }
 
-# 3) RRset 単位で apply（items は正規化済みで順序安定）
+# items は「引数」ではなく「ブロック」なので dynamic で展開
 resource "oci_dns_rrset" "good" {
-  for_each = local.rrsets
-
+  for_each        = local.rrsets
   zone_name_or_id = oci_dns_zone.zone.id
   domain          = each.value.name
   rtype           = each.value.type
