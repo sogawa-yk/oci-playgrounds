@@ -40,10 +40,16 @@ locals {
   }
 }
 
+resource "oci_dns_view" "view" {
+  name           = "example-view"
+  compartment_id = var.compartment_ocid
+}
+
 resource "oci_dns_zone" "zone" {
   name           = "example.com"
   zone_type      = "PRIMARY"
   scope          = "PRIVATE"
+  view_id        = oci_dns_view.view.id
   compartment_id = var.compartment_ocid
 }
 
