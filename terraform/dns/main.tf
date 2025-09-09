@@ -41,7 +41,6 @@ locals {
 }
 
 resource "oci_dns_view" "view" {
-  name           = "example-view"
   compartment_id = var.compartment_ocid
 }
 
