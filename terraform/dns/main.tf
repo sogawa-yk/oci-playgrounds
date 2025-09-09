@@ -2,14 +2,12 @@ variable "compartment_ocid" { type = string }
 
 variable "records_yaml" {
   type        = string
-  description = "YAMLファイルのパス、または YAML 文字列（base64でも可）"
+  description = "YAMLファイル"
 }
 
 locals {
-  # 2) base64 ならデコード、そうでなければそのまま
   yaml_plain = base64decode(var.records_yaml)
 
-  # 3) YAML をデコード
   raw = yamldecode(local.yaml_plain)
 
   canonical = [
@@ -18,7 +16,6 @@ locals {
       type = upper(r.type)
       ttl  = try(r.ttl, 300)
 
-      # ここを修正：trim → trimspace、ついでに型安定化
       rdata = sort([
         for v in tolist(r.rdata) : trimspace(tostring(v))
       ])
@@ -52,7 +49,7 @@ resource "oci_dns_zone" "zone" {
   compartment_id = var.compartment_ocid
 }
 
-# items は「引数」ではなく「ブロック」なので dynamic で展開
+
 resource "oci_dns_rrset" "good" {
   for_each        = local.rrsets
   zone_name_or_id = oci_dns_zone.zone.id
