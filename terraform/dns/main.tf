@@ -12,13 +12,16 @@ locals {
   # 3) YAML をデコード
   raw = yamldecode(local.yaml_plain)
 
-  # 以降は「良い例」と同じ正規化
   canonical = [
     for r in local.raw : {
-      name  = endswith(r.name, ".") ? r.name : "${r.name}."
-      type  = upper(r.type)
-      ttl   = try(r.ttl, 300)
-      rdata = sort([for v in r.rdata : trim(v)])
+      name = endswith(r.name, ".") ? r.name : "${r.name}."
+      type = upper(r.type)
+      ttl  = try(r.ttl, 300)
+
+      # ここを修正：trim → trimspace、ついでに型安定化
+      rdata = sort([
+        for v in tolist(r.rdata) : trimspace(tostring(v))
+      ])
     }
   ]
 
