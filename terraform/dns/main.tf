@@ -43,6 +43,7 @@ locals {
 resource "oci_dns_zone" "zone" {
   name           = "example.com"
   zone_type      = "PRIMARY"
+  scope          = "PRIVATE"
   compartment_id = var.compartment_ocid
 }
 
