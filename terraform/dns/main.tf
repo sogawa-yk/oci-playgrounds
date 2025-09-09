@@ -6,11 +6,8 @@ variable "records_yaml" {
 }
 
 locals {
-  # 1) var.records_yaml が実在パスなら file()、そうでなければそのまま使う
-  yaml_raw_string = fileexists(var.records_yaml) ? file(var.records_yaml) : var.records_yaml
-
   # 2) base64 ならデコード、そうでなければそのまま
-  yaml_plain = try(base64decode(local.yaml_raw_string), local.yaml_raw_string)
+  yaml_plain = base64decode(var.records_yaml)
 
   # 3) YAML をデコード
   raw = yamldecode(local.yaml_plain)
