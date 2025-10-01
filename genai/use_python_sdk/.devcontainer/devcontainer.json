@@ -1,0 +1,33 @@
+{
+    "name": "Jupyter Notebook Dev Container",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
+    "workspaceFolder": "/workspace",
+    "mounts": [
+        "source=${localEnv:HOME}/.oci,target=/home/vscode/.oci,type=bind,readonly"
+    ],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-toolsai.jupyter"
+            ],
+            "settings": {
+                "python.defaultInterpreterPath": "/usr/local/bin/python3",
+                "jupyter.kernels.filter": [
+                    {
+                        "path": "/usr/local/bin/python3",
+                        "type": "pythonEnvironment"
+                    }
+                ]
+            }
+        }
+    },
+    "forwardPorts": [
+        8888
+    ],
+    "postCreateCommand": "pip3 install ipykernel && python3 -m ipykernel install --user --name=python3 --display-name='Python 3 (Dev Container)'",
+    "remoteUser": "vscode"
+}
