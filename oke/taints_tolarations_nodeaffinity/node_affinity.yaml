@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-pod
+spec:
+  replicas: 6
+  selector:
+    matchLabels:
+      app: ai-pod
+  template:
+    metadata:
+      labels:
+        app: ai-pod
+    spec:
+      containers:
+      - image: docker.io/nginx
+        name: nginx
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: pooltype
+                operator: In
+                values: 
+                  - pool-ai
+      tolerations:
+        - key : "workload"
+          operator: "Equal"
+          effect: "NoSchedule"
+          value: "ai"

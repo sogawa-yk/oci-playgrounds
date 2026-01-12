@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: log-generator-with-fluentd
+  labels:
+    app: log-generator
+spec:
+  volumes:
+    - name: logdir
+      emptyDir: {}
+    - name: fluentd-config
+      configMap:
+        name: fluentd-sidecar-config   # 別途ConfigMapを作成
+  containers:
+  - name: log-generator
+    image: busybox:latest
+    command: ["/bin/sh", "-c"]
+    args:
+      - |
+        while true; do
+          echo "$(date '+%Y-%m-%dT%H:%M:%S') INFO Hello from BusyBox" | tee -a /var/log/app/app.log;
+          sleep 1;
+        done
+    volumeMounts:
+      - name: logdir
+        mountPath: /var/log/app
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi
+      limits:
+        cpu: 50m
+        memory: 64Mi
+
+  - name: fluentd
+    image: fluent/fluentd:v1.16-debian-1
+    volumeMounts:
+      - name: logdir
+        mountPath: /var/log/app
+        readOnly: true
+      - name: fluentd-config
+        mountPath: /fluentd/etc
+    env:
+      - name: FLUENT_UID
+        value: "0"
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi

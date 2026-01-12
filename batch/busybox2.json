@@ -1,0 +1,18 @@
+{
+    "compartmentId": "ocid1.compartment.oc1..aaaaaaaanxm4oucgt5pkgd7sw2vouvckvvxan7ca2lirowaao7krnzlkdkhq",
+    "batchJobPoolId": "ocid1.batchjobpool.oc1.iad.amaaaaaassl65iqa5losfksmirftuswr2uaye6sinyzcyj7ttnaeg2h4voyq",
+    "displayName": "busybox-test",
+    "tasks": [
+        {
+            "name": "busybox-task",
+            "type": "COMPUTE",
+            "batchTaskProfileId": "ocid1.batchtaskprofile.oc1.iad.amaaaaaassl65iqavtzuihwit3fq6pvubimzhfgilmuqujjtqpgklt4v63na",
+            "batchTaskEnvironmentId": "ocid1.batchtaskenvironment.oc1.iad.amaaaaaassl65iqaq5xcs24olm2jlnk6hltlyo6op4xa67qplojsxdgosiba",
+            "command": [
+                "/bin/sh",
+                "-c",
+                "echo 'BusyBox is running' && sleep 3600"
+            ]
+        }
+    ]
+}

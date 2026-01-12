@@ -1,0 +1,205 @@
+apiVersion: v1
+kind: Node
+metadata:
+  annotations:
+    alpha.kubernetes.io/provided-node-ip: 10.0.10.130
+    csi.volume.kubernetes.io/nodeid: '{"blockvolume.csi.oraclecloud.com":"10.0.10.130","fss.csi.oraclecloud.com":"10.0.10.130","lustre.csi.oraclecloud.com":"10.0.10.130","rook-ceph.cephfs.csi.ceph.com":"10.0.10.130","rook-ceph.rbd.csi.ceph.com":"10.0.10.130"}'
+    node.alpha.kubernetes.io/ttl: "0"
+    oci.oraclecloud.com/compartment-id: ocid1.compartment.oc1..aaaaaaaanxm4oucgt5pkgd7sw2vouvckvvxan7ca2lirowaao7krnzlkdkhq
+    oci.oraclecloud.com/node-pool-id: ocid1.nodepool.oc1.ap-osaka-1.aaaaaaaawofw7fi4dbk7l6ctejyahf6r3odu7ovcp34gfuca5nvgxp5ly36q
+    volumes.kubernetes.io/controller-managed-attach-detach: "true"
+  creationTimestamp: "2025-11-18T00:44:02Z"
+  labels:
+    beta.kubernetes.io/arch: amd64
+    beta.kubernetes.io/instance-type: VM.Standard.E3.Flex
+    beta.kubernetes.io/os: linux
+    displayName: oke-cikjq2npuaa-nvgxp5ly36q-scditm2e7vq-0
+    failure-domain.beta.kubernetes.io/region: ap-osaka-1
+    failure-domain.beta.kubernetes.io/zone: AP-OSAKA-1-AD-1
+    hostname: oke-cikjq2npuaa-nvgxp5ly36q-scditm2e7vq-0
+    internal_addr: 10.0.10.130
+    kubernetes.io/arch: amd64
+    kubernetes.io/hostname: 10.0.10.130
+    kubernetes.io/os: linux
+    last-migration-failure: get_kubesvc_failure
+    name: pool1
+    node-role.kubernetes.io/node: ""
+    node.info.ds_proxymux_client: "true"
+    node.info/compartment.id: aaaaaaaanxm4oucgt5pkgd7sw2vouvckvvxan7ca2lirowaao7krnzlkdkhq
+    node.info/compartment.name: yuki.sogawa
+    node.info/kubeletVersion: v1.34
+    node.kubernetes.io/instance-type: VM.Standard.E3.Flex
+    oci.oraclecloud.com/fault-domain: FAULT-DOMAIN-1
+    oci.oraclecloud.com/host.id: 679199b8509
+    oci.oraclecloud.com/host.rack_id: ec688d7e273
+    oci.oraclecloud.com/ip-family-ipv4: "true"
+    oci.oraclecloud.com/ip-family-preferred: ipv4
+    oci.oraclecloud.com/node.info.managed: "true"
+    oci.oraclecloud.com/vcn-native-ip-cni: "true"
+    oke.oraclecloud.com/node.info.private_subnet: "true"
+    oke.oraclecloud.com/node.info.private_worker: "true"
+    topology.kubernetes.io/region: ap-osaka-1
+    topology.kubernetes.io/zone: AP-OSAKA-1-AD-1
+  name: 10.0.10.130
+  resourceVersion: "7711238"
+  uid: f6c2b4a9-bb6f-42c3-82a8-1827f37dbfaf
+spec:
+  providerID: ocid1.instance.oc1.ap-osaka-1.anvwsljrssl65iqcs73kh26vrjqrsizbgz5pxqzxdmulwv5s4ynpxexftdka
+  taints:
+  - effect: NoSchedule
+    key: workload
+    value: ai
+status:
+  addresses:
+  - address: 10.0.10.130
+    type: InternalIP
+  - address: 10.0.10.130
+    type: Hostname
+  allocatable:
+    cpu: 1830m
+    ephemeral-storage: "85891822245"
+    hugepages-1Gi: "0"
+    hugepages-2Mi: "0"
+    memory: 13832836Ki
+    pods: "31"
+  capacity:
+    cpu: "2"
+    ephemeral-storage: 93198592Ki
+    hugepages-1Gi: "0"
+    hugepages-2Mi: "0"
+    memory: 16134788Ki
+    pods: "31"
+  conditions:
+  - lastHeartbeatTime: "2025-12-07T23:11:12Z"
+    lastTransitionTime: "2025-12-07T23:09:51Z"
+    message: kubelet has sufficient memory available
+    reason: KubeletHasSufficientMemory
+    status: "False"
+    type: MemoryPressure
+  - lastHeartbeatTime: "2025-12-07T23:11:12Z"
+    lastTransitionTime: "2025-12-07T23:09:51Z"
+    message: kubelet has no disk pressure
+    reason: KubeletHasNoDiskPressure
+    status: "False"
+    type: DiskPressure
+  - lastHeartbeatTime: "2025-12-07T23:11:12Z"
+    lastTransitionTime: "2025-12-07T23:09:51Z"
+    message: kubelet has sufficient PID available
+    reason: KubeletHasSufficientPID
+    status: "False"
+    type: PIDPressure
+  - lastHeartbeatTime: "2025-12-07T23:11:12Z"
+    lastTransitionTime: "2025-12-07T23:09:53Z"
+    message: kubelet is posting ready status
+    reason: KubeletReady
+    status: "True"
+    type: Ready
+  daemonEndpoints:
+    kubeletEndpoint:
+      Port: 10250
+  features:
+    supplementalGroupsPolicy: true
+  images:
+  - names:
+    - quay.io/jupyter/pytorch-notebook@sha256:0e758cc7f8e6921f2678ac58193fb1cf174394e2c70e1b9aaa1dd1bd2b795799
+    - quay.io/jupyter/pytorch-notebook@sha256:9b83677592f21aa834701125d36b7d2af898ac57156f3e41add52a0db5d9cc46
+    - quay.io/jupyter/pytorch-notebook:latest
+    sizeBytes: 4444165697
+  - names:
+    - quay.io/cephcsi/cephcsi@sha256:5992bc05b4ec4d727f1a645c1c725e70eb0807baf54144e4c0dcc33db598fc67
+    - quay.io/cephcsi/cephcsi@sha256:e550a2f872ca468ec552157a9db79abfbbb27375d15ccc4abb439f69fa292726
+    - quay.io/cephcsi/cephcsi:v3.12.2
+    sizeBytes: 1583914320
+  - names:
+    - docker.io/rook/ceph@sha256:4d3d17546945c681991b51ed69bc8110785300b0257249fdab1167bcc3ed1e3a
+    - docker.io/rook/ceph@sha256:b94b23ecaf32e656c2460e2420dbc328be2951c673e41b7d3f2e3fe1eddecb59
+    - docker.io/rook/ceph:v1.15.5
+    sizeBytes: 1374877692
+  - names:
+    - quay.io/ceph/ceph@sha256:6ac7f923aa1d23b43248ce0ddec7e1388855ee3d00813b52c3172b0b23b37906
+    - quay.io/ceph/ceph@sha256:ac06cdca6f2512a763f1ace8553330e454152b82f95a2b6bf33c3f3ec2eeac77
+    - quay.io/ceph/ceph:v18.2.4
+    sizeBytes: 1248040036
+  - names:
+    - ap-osaka-1.ocir.io/id9y6mi8tcky/oke-public-kube-proxy@sha256:0c20d2732b207c84ff7b37df120bc484b16ec253ccf76086837f6fd6de7120dc
+    - ap-osaka-1.ocir.io/id9y6mi8tcky/oke-public-kube-proxy@sha256:155dada892d1ef7528f461a803c55d83e01b29cca98118bcc701a41be9b19891
+    sizeBytes: 458732132
+  - names:
+    - ap-osaka-1.ocir.io/id9y6mi8tcky/oke-public-vcn-native-ip-cni-plugin@sha256:1d5b91da16316c62e1d275b69d780417129ced5d0f8c652deff5820bf1d3ae50
+    - ap-osaka-1.ocir.io/id9y6mi8tcky/oke-public-vcn-native-ip-cni-plugin@sha256:852974a2e686fd97fbdb61fb0b357a3bd9e8df0d245ad868bf781b292fbd5138
+    sizeBytes: 455208821
+  - names:
+    - ap-osaka-1.ocir.io/id9y6mi8tcky/oke-public-cluster-proportional-autoscaler-amd64@sha256:1908914e0c9055edd754a633de2a37fd6811a64565317f2f44bf4adea85f0654
+    - ap-osaka-1.ocir.io/id9y6mi8tcky/oke-public-cluster-proportional-autoscaler-amd64@sha256:4798540032c0c56d349cecdc809565583c9077c8f75c6cc8cfd2258bf0797a3b
+    sizeBytes: 266560659
+  - names:
+    - ap-osaka-1.ocir.io/axoxdievda5j/oke-public-cloud-provider-oci@sha256:2eca76b52bc3198f86b839c199f67476100bc614e401dec25ac0a2310f609c28
+    - ap-osaka-1.ocir.io/axoxdievda5j/oke-public-cloud-provider-oci@sha256:345f3f5d1da841bcf29ee4633adcd683adc69dc80689a69753e29f217cb67306
+    sizeBytes: 251447719
+  - names:
+    - ap-osaka-1.ocir.io/axoxdievda5j/oke-public-pause@sha256:6e287874898efea60adff9dc1faaee355740b192763f963fe66cf755d995cf32
+    - ap-osaka-1.ocir.io/axoxdievda5j/oke-public-pause@sha256:7e1803cfb8217d732f1a701c55625d2abb901e1d478b676bf2af5fa8abdb5140
+    sizeBytes: 228507655
+  - names:
+    - ap-osaka-1.ocir.io/axoxdievda5j/oke-public-proxymux-cli@sha256:5a6126751984df52b0d2a163e435de54b1b3cfefe3f87a2277e4a9344cb75c9d
+    - ap-osaka-1.ocir.io/axoxdievda5j/oke-public-proxymux-cli@sha256:5ed1b0c35203c96f0ac5f15ae8105f80015b653d45c2744b0f74493541b2ad44
+    sizeBytes: 194723698
+  - names:
+    - docker.io/library/nginx@sha256:553f64aecdc31b5bf944521731cd70e35da4faed96b2b7548a3d8e2598c52a42
+    - docker.io/library/nginx@sha256:5c733364e9a8f7e6d7289ceaad623c6600479fe95c3ab5534f07bfd7416d9541
+    - docker.io/library/nginx:latest
+    sizeBytes: 155491845
+  - names:
+    - registry.k8s.io/sig-storage/csi-provisioner@sha256:405a14e1aa702f7ea133cea459e8395fe40a6125c088c55569e696d48e1bd385
+    - registry.k8s.io/sig-storage/csi-provisioner@sha256:94add3feccf10c5191059f338e51d3a1f3ef5012e4e37ea8bd28c1a8d3d393eb
+    - registry.k8s.io/sig-storage/csi-provisioner:v5.0.1
+    sizeBytes: 71166136
+  - names:
+    - registry.k8s.io/sig-storage/csi-resizer@sha256:a541e6cc2d8b011bb21b1d4ffec6b090e85270cce6276ee302d86153eec0af43
+    - registry.k8s.io/sig-storage/csi-resizer@sha256:d435d5bb8637f4c0229c5eb5ce515f0718ee5dc55a49128a163f40b2a497af73
+    - registry.k8s.io/sig-storage/csi-resizer:v1.11.1
+    sizeBytes: 68048029
+  - names:
+    - registry.k8s.io/sig-storage/csi-attacher@sha256:a70202a7cb71dd692c4299514951ead0485345bf64d9381a09f06490d39ebf43
+    - registry.k8s.io/sig-storage/csi-attacher@sha256:b4d611100ece2f9bc980d1cb19c2285b8868da261e3b1ee8f45448ab5512ab94
+    - registry.k8s.io/sig-storage/csi-attacher:v4.6.1
+    sizeBytes: 67755683
+  - names:
+    - registry.k8s.io/sig-storage/csi-snapshotter@sha256:2e04046334baf9be425bb0fa1d04c2d1720d770825eedbdbcdb10d430da4ad8c
+    - registry.k8s.io/sig-storage/csi-snapshotter@sha256:48665552c53bf9654e63c93a1f866a875f07eabbc75f15cf3f9a1a6b8331ed49
+    - registry.k8s.io/sig-storage/csi-snapshotter:v8.0.1
+    sizeBytes: 66902728
+  - names:
+    - registry.k8s.io/sig-storage/csi-node-driver-registrar@sha256:e01facb9fb9cffaf52d0053bdb979fbd8c505c8e411939a6e026dd061a6b4fbe
+    - registry.k8s.io/sig-storage/csi-node-driver-registrar@sha256:e9349eed3d686c7bd1b474a6c6623f53ff80930c2e920e98df1927a2fbc58a4a
+    - registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.11.1
+    sizeBytes: 29026739
+  - names:
+    - docker.io/library/busybox@sha256:870e815c3a50dd0f6b40efddb319c72c32c3ee340b5a3e8945904232ccd12f44
+    - docker.io/library/busybox@sha256:e3652a00a2fabd16ce889f0aa32c38eec347b997e73bd09e69c962ec7f8732ee
+    - docker.io/library/busybox:latest
+    sizeBytes: 4680654
+  nodeInfo:
+    architecture: amd64
+    bootID: 34e56367-a798-4e40-adfa-372e3615d4df
+    containerRuntimeVersion: cri-o://1.34.0-66.1c4616d3c11.el8
+    kernelVersion: 4.18.0-553.53.1.el8_lustre.x86_64
+    kubeProxyVersion: ""
+    kubeletVersion: v1.34.1
+    machineID: b0fabf52592b44398c3d2b289dd0ae28
+    operatingSystem: linux
+    osImage: Oracle Linux Server 8.10
+    systemUUID: b0fabf52-592b-4439-8c3d-2b289dd0ae28
+  runtimeHandlers:
+  - features:
+      recursiveReadOnlyMounts: false
+      userNamespaces: true
+    name: runc
+  - features:
+      recursiveReadOnlyMounts: false
+      userNamespaces: true
+    name: ""
+  - features:
+      recursiveReadOnlyMounts: false
+      userNamespaces: true
+    name: crun

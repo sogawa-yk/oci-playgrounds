@@ -1,0 +1,31 @@
+{
+    "displayName": "investigate-job",
+    "compartmentId": "ocid1.compartment.oc1..aaaaaaaanxm4oucgt5pkgd7sw2vouvckvvxan7ca2lirowaao7krnzlkdkhq",
+    "batchJobPoolId": "ocid1.batchjobpool.oc1.iad.amaaaaaassl65iqa3pktwa5hxwkr2gwebmd23pdu3whwbpbt6bcu7dq2zkeq",
+    "tasks": [
+        {
+            "name": "investigate-task",
+            "type": "COMPUTE",
+            "batchTaskProfileId": "ocid1.batchtaskprofile.oc1.iad.amaaaaaassl65iqavtzuihwit3fq6pvubimzhfgilmuqujjtqpgklt4v63na",
+            "batchTaskEnvironmentId": "ocid1.batchtaskenvironment.oc1.iad.amaaaaaassl65iqaitqdnaip5lwwou4ec2f7epra77bqvbzparv33eauw36q",
+            "environmentVariables": [
+                {
+                    "name": "BUCKET_NAME",
+                    "value": "batch-test"
+                },
+                {
+                    "name": "NAMESPACE",
+                    "value": "orasejapan"
+                },
+                {
+                    "name": "OCI_REGION",
+                    "value": "us-ashburn-1"
+                }
+            ],
+            "command": [
+                "python",
+                "main.py"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,5 @@
+- [x] Investigate the error in the terminal output <!-- id: 0 -->
+- [x] Analyze `oke/cert-manager/nginx-https.yaml` for configuration errors <!-- id: 1 -->
+- [x] Check the status of the Ingress and related resources (Verified via Pod Check) <!-- id: 2 -->
+- [x] Fix the manifest if errors are found <!-- id: 3 -->
+- [x] Verify the fix <!-- id: 4 -->

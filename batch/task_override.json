@@ -1,0 +1,18 @@
+{
+    "compartmentId": "ocid1.compartment.oc1..aaaaaaaanxm4oucgt5pkgd7sw2vouvckvvxan7ca2lirowaao7krnzlkdkhq",
+    "batchJobPoolId": "ocid1.batchjobpool.oc1.iad.amaaaaaassl65iqa5losfksmirftuswr2uaye6sinyzcyj7ttnaeg2h4voyq",
+    "displayName": "debug-job-sleep",
+    "tasks": [
+        {
+            "name": "debug-task",
+            "type": "COMPUTE",
+            "batchTaskProfileId": "ocid1.batchtaskprofile.oc1.iad.amaaaaaassl65iqavtzuihwit3fq6pvubimzhfgilmuqujjtqpgklt4v63na",
+            "batchTaskEnvironmentId": "ocid1.batchtaskenvironment.oc1.iad.amaaaaaassl65iqagffzm2onhe77cwgnizthl3cvzbjvkvkhbapsefpenujq",
+            "command": [
+                "/bin/sh",
+                "-c",
+                "echo 'Hello from Batch' && sleep 3600"
+            ]
+        }
+    ]
+}

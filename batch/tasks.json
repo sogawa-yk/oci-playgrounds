@@ -1,0 +1,49 @@
+[
+  [
+    "This parameter should actually be a JSON object rather than an array - pick one of the following object variants to use",
+    {
+      "arguments": [
+        "string",
+        "string"
+      ],
+      "batchTaskEnvironmentId": "string",
+      "batchTaskProfileId": "string",
+      "command": [
+        "string",
+        "string"
+      ],
+      "dependencies": [
+        "string",
+        "string"
+      ],
+      "description": "string",
+      "entitlementClaims": [
+        "string",
+        "string"
+      ],
+      "environmentVariables": [
+        {
+          "name": "string",
+          "value": "string"
+        },
+        {
+          "name": "string",
+          "value": "string"
+        }
+      ],
+      "fleetAssignmentPolicy": [
+        "This parameter should actually be a JSON object rather than an array - pick one of the following object variants to use",
+        {
+          "type": "BEST_FIT"
+        },
+        {
+          "threshold": 0.0,
+          "type": "FLEX_FIT"
+        }
+      ],
+      "name": "string",
+      "type": "COMPUTE"
+    }
+  ],
+  null
+]
