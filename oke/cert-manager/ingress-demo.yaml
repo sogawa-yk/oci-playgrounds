@@ -1,0 +1,64 @@
+# 1. アプリケーション (HTTPで動作)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echo-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: echo
+  template:
+    metadata:
+      labels:
+        app: echo
+    spec:
+      containers:
+      - name: echo
+        image: gcr.io/google-containers/echoserver:1.10
+        ports:
+        - containerPort: 8080
+---
+# 2. サービス (ClusterIP)
+apiVersion: v1
+kind: Service
+metadata:
+  name: echo-service
+spec:
+  selector:
+    app: echo
+  ports:
+    - port: 80
+      targetPort: 8080
+---
+# 3. Ingress (ここが重要)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: echo-ingress
+  annotations:
+    # OKE Native Ingressを指定 (環境により "oci" または "nginx" など)
+    # ※ OCI Native Ingress Controllerの場合は通常 "oci" クラスを使います
+    
+    # 【cert-managerの魔法】
+    # このアノテーションがあるだけで、Certificateリソースが自動で作られます
+    cert-manager.io/issuer: "selfsigned-issuer" 
+spec:
+  # OCI Native Ingress Controllerを指定
+  ingressClassName: ic
+  tls:
+  - hosts:
+    - example.com
+    # cert-managerが生成するSecret名をここに指定
+    secretName: echo-tls-secret
+  rules:
+  - host: example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: echo-service
+            port:
+              number: 80
