@@ -8,7 +8,7 @@ spec:
   controller: oci.oraclecloud.com/native-ingress-controller
   parameters:
     scope: Namespace
-    namespace: native-ingress-controller-system
+    namespace: default
     apiGroup: ingress.oraclecloud.com
     kind: ingressclassparameters
     name: icp

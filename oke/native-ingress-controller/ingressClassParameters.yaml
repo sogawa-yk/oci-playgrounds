@@ -2,7 +2,6 @@ apiVersion: "ingress.oraclecloud.com/v1beta1"
 kind: IngressClassParameters
 metadata:
   name: icp
-  namespace: native-ingress-controller-system
 spec:
   compartmentId: "ocid1.compartment.oc1..aaaaaaaanxm4oucgt5pkgd7sw2vouvckvvxan7ca2lirowaao7krnzlkdkhq"
   subnetId: "ocid1.subnet.oc1.ca-toronto-1.aaaaaaaat5yvlgp3i4ds6aj6na74w5uqqjlbgyenlkntl3qk2qltsqw2jreq"

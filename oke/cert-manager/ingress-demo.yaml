@@ -37,12 +37,10 @@ kind: Ingress
 metadata:
   name: echo-ingress
   annotations:
-    # OKE Native Ingressを指定 (環境により "oci" または "nginx" など)
-    # ※ OCI Native Ingress Controllerの場合は通常 "oci" クラスを使います
-    
-    # 【cert-managerの魔法】
-    # このアノテーションがあるだけで、Certificateリソースが自動で作られます
+    oci-native-ingress.oraclecloud.com/healthcheck-port: "8080"
     cert-manager.io/issuer: "selfsigned-issuer" 
+    oci-native-ingress.oraclecloud.com/backend-tls-enabled: "false"
+    oci-native-ingress.oraclecloud.com/https-listener-port: "443"
 spec:
   # OCI Native Ingress Controllerを指定
   ingressClassName: ic
@@ -62,3 +60,8 @@ spec:
             name: echo-service
             port:
               number: 80
+  defaultBackend:
+    service:
+      name: echo-service
+      port:
+        number: 80

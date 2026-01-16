@@ -1,0 +1,8 @@
+- [x] Analyze ingress manifests and controller config <!-- id: 0 -->
+- [x] Check Ingress resource status and events <!-- id: 1 -->
+- [x] Investigate connectivity issues (Security List missing port 443) <!-- id: 2 -->
+- [x] Investigate why Service has no endpoints (ImagePullBackOff) <!-- id: 5 -->
+- [/] Fix configuration <!-- id: 3 -->
+    - [x] Update Deployment image <!-- id: 3.1 -->
+    - [x] Add Security List rule for port 443 (User will handle) <!-- id: 3.2 -->
+    - [x] Verify fix (Pod Running) <!-- id: 4 -->
