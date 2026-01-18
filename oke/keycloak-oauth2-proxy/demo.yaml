@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secured-app
+  labels:
+    app: secured-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: secured-app
+  template:
+    metadata:
+      labels:
+        app: secured-app
+    spec:
+      hostAliases:
+      - ip: "10.96.126.124"
+        hostnames:
+        - "lab.40.233.98.237.sslip.io"
+      containers:
+        # --- 1. アプリケーション (本来はここにMCPサーバーが入る) ---
+        - name: app
+          image: docker.io/ealen/echo-server  # リクエストヘッダーをJSONで返す便利アプリ
+          ports:
+            - containerPort: 80
+          env:
+            - name: PORT
+              value: "80"
+
+        # --- 2. Auth Proxy (Sidecar) ---
+        - name: oauth2-proxy
+          image: quay.io/oauth2-proxy/oauth2-proxy:latest
+          ports:
+            - containerPort: 4180
+          args:
+            - --http-address=0.0.0.0:4180
+            - --upstream=http://localhost:80  # 同一Pod内のアプリへ転送
+            - --provider=oidc
+            - --oidc-issuer-url=http://lab.40.233.98.237.sslip.io/auth/realms/lab # 外部公開用URL
+            - --client-id=oauth2-proxy
+            - --client-secret=eRRhRnBEPzKauIIVVtn0gisSFTuQtqS
+            - --email-domain=*
+            - --cookie-secret=OQINaROhtE9TcXRBVfgqDNvCePoZvvph  # ランダムな文字列
+            - --cookie-secure=false  # ローカル開発用(HTTPSでないため)
+            - --set-xauthrequest=true
+            - --pass-user-headers=true # アプリにuser情報を渡す設定
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: secured-app
+spec:
+  selector:
+    app: secured-app
+  ports:
+    - port: 80
+      targetPort: 4180
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: secured-app-ingress
+  annotations:
+    oci-native-ingress.oraclecloud.com/healthcheck-protocol: "HTTP"
+    oci-native-ingress.oraclecloud.com/healthcheck-path: "/ping"
+    oci-native-ingress.oraclecloud.com/healthcheck-port: "80"
+spec:
+    ingressClassName: mcp-ingress-class
+    rules:
+    - host: lab.40.233.98.237.sslip.io
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+           service:
+            name: secured-app
+            port:
+              number: 80
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: keycloak-ingress
+  annotations:
+    oci-native-ingress.oraclecloud.com/healthcheck-protocol: "HTTP"
+    oci-native-ingress.oraclecloud.com/healthcheck-path: "/auth/realms/master"
+    oci-native-ingress.oraclecloud.com/healthcheck-port: "8080"
+spec:
+    ingressClassName: mcp-ingress-class
+    rules:
+    - host: lab.40.233.98.237.sslip.io
+      http:
+        paths:
+        - path: /auth
+          pathType: Prefix
+          backend:
+           service:
+            name: keycloak-keycloakx-http
+            port:
+              number: 80

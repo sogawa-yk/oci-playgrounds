@@ -1,0 +1,5 @@
+Usage: oci lb load-balancer list [OPTIONS]
+
+Error: No such option: --compartment-id-in-subtree Did you mean --compartment-id?
+
+For OCI CLI commands and parameters suggestion, auto completion and other useful features, try the Interactive mode by typing `oci -i`.
