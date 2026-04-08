@@ -1,0 +1,185 @@
+---
+# SearXNG settings ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: searxng-settings
+data:
+  settings.yml: |
+    use_default_settings: true
+    search:
+      formats:
+        - html
+        - json
+    server:
+      secret_key: "mcp-searxng-secret-key-2026"
+      limiter: false
+---
+# SearXNG Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: searxng
+  labels:
+    app: searxng
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: searxng
+  template:
+    metadata:
+      labels:
+        app: searxng
+    spec:
+      initContainers:
+        - name: copy-settings
+          image: docker.io/busybox:latest
+          command: ["sh", "-c", "cp /config/settings.yml /etc/searxng/settings.yml"]
+          volumeMounts:
+            - name: searxng-config
+              mountPath: /config
+            - name: searxng-data
+              mountPath: /etc/searxng
+      containers:
+        - name: searxng
+          image: docker.io/searxng/searxng:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SEARXNG_BASE_URL
+              value: "http://searxng:8080/"
+            - name: SEARXNG_PORT
+              value: "8080"
+          volumeMounts:
+            - name: searxng-data
+              mountPath: /etc/searxng
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 30
+      volumes:
+        - name: searxng-config
+          configMap:
+            name: searxng-settings
+        - name: searxng-data
+          emptyDir: {}
+---
+# SearXNG Service (internal only)
+apiVersion: v1
+kind: Service
+metadata:
+  name: searxng
+  labels:
+    app: searxng
+spec:
+  selector:
+    app: searxng
+  ports:
+    - port: 8080
+      targetPort: 8080
+---
+# MCP Server Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-search
+  labels:
+    app: web-search
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-search
+  template:
+    metadata:
+      labels:
+        app: web-search
+    spec:
+      containers:
+        - name: web-search
+          image: syd.ocir.io/orasejapan/web-search:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          env:
+            - name: SEARXNG_URL
+              value: "http://searxng:8080"
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 30
+      imagePullSecrets:
+        - name: ocir
+---
+# MCP Server Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-search
+  labels:
+    app: web-search
+spec:
+  selector:
+    app: web-search
+  ports:
+    - port: 80
+      targetPort: 8000
+---
+# Ingress with TLS
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: web-search
+  labels:
+    app: web-search
+  annotations:
+    oci-native-ingress.oraclecloud.com/backend-tls-enabled: "false"
+    oci-native-ingress.oraclecloud.com/https-listener-port: "443"
+spec:
+  ingressClassName: ic
+  tls:
+    - hosts:
+        - web-search.sogawa-yk.com
+      secretName: wildcard-sogawa-yk-com-tls
+  rules:
+    - host: web-search.sogawa-yk.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web-search
+                port:
+                  number: 80

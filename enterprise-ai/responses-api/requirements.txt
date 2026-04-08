@@ -1,0 +1,5 @@
+chainlit
+httpx
+openai
+oci-genai-auth
+python-dotenv

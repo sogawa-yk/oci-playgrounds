@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: research-assistant
+  namespace: default
+  labels:
+    app: research-assistant
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: research-assistant
+  template:
+    metadata:
+      labels:
+        app: research-assistant
+    spec:
+      imagePullSecrets:
+      - name: ocir
+      containers:
+      - name: research-assistant
+        image: kix.ocir.io/orasejapan/enterprise-ai/agents/research-assistant:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+        env:
+        - name: OCI_GENAI_PROJECT
+          value: ocid1.generativeaiproject.oc1.ap-osaka-1.amaaaaaassl65iqahgxjrfsrylxyfdyejtii6ef7u3juahqz46syytx6vqea
+        - name: OCI_REGION
+          value: ap-osaka-1
+        - name: VECTOR_STORE_ID
+          value: vs_kix_tb41acvu0g88kunindnu77axz95w6yu35axn50tt7y2rmfnd
+        resources:
+          requests:
+            cpu: 250m
+            memory: 512Mi
+          limits:
+            cpu: "1"
+            memory: 1Gi
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: research-assistant
+  namespace: default
+  labels:
+    app: research-assistant
+spec:
+  type: ClusterIP
+  selector:
+    app: research-assistant
+  ports:
+  - port: 80
+    targetPort: 8000
+    protocol: TCP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: research-assistant
+  namespace: default
+  labels:
+    app: research-assistant
+  annotations:
+    oci-native-ingress.oraclecloud.com/https-listener-port: "443"
+    oci-native-ingress.oraclecloud.com/backend-tls-enabled: "false"
+spec:
+  ingressClassName: ic
+  tls:
+  - hosts:
+    - research-assistant.sogawa-yk.com
+    secretName: wildcard-sogawa-yk-com-tls
+  rules:
+  - host: research-assistant.sogawa-yk.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: research-assistant
+            port:
+              number: 80

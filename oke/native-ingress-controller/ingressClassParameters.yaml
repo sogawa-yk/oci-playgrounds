@@ -4,7 +4,7 @@ metadata:
   name: icp
 spec:
   compartmentId: "ocid1.compartment.oc1..aaaaaaaanxm4oucgt5pkgd7sw2vouvckvvxan7ca2lirowaao7krnzlkdkhq"
-  subnetId: "ocid1.subnet.oc1.ca-toronto-1.aaaaaaaat5yvlgp3i4ds6aj6na74w5uqqjlbgyenlkntl3qk2qltsqw2jreq"
+  subnetId: "ocid1.subnet.oc1.ap-sydney-1.aaaaaaaalcdwang7o736t4xjxeitcuoogjhdibhbdf46ltsndqlrqx4bheaq"
   loadBalancerName: "oci-native-ingress-lb"
   isPrivate: false
   maxBandwidthMbps: 100
