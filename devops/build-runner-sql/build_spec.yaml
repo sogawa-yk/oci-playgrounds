@@ -1,0 +1,95 @@
+version: 0.1
+component: build
+timeoutInSeconds: 600
+shell: bash
+env:
+  exportedVariables:
+    - SQL_EXIT_CODE
+
+  vaultVariables:
+    # OCI VaultのシークレットOCIDを設定
+    DB_USER: "ocid1.vaultsecret.oc1.ca-toronto-1.amaaaaaassl65iqa2hbivioflvlznisrlq5giso2qc3d3vxinco2uwwoqdtq"
+    DB_PASSWORD: "ocid1.vaultsecret.oc1.ca-toronto-1.amaaaaaassl65iqawwq2paawfnbiis6zxzwlqp4bgsxcjgnxg22bpz36ohbq"
+    WALLET_PASSWORD: "ocid1.vaultsecret.oc1.ca-toronto-1.amaaaaaassl65iqapbuxx2mudu54qitip2hohdim7sddecwzbjt4hf74vewa"
+
+  variables:
+    # Autonomous DatabaseのOCID
+    ADB_OCID: "ocid1.autonomousdatabase.oc1.ca-toronto-1.an2g6ljrssl65iqaoiervyzfnr6tyahw2hpuhpau3zo7qu5dzsskbac3ffka"
+    # TNS接続サービス名 (例: myatp_tp, myatp_low, myatp_high)
+    DB_SERVICE: "pmtpmzlap9pck5i_yrg70lj3xgnby6to_low"
+
+steps:
+  - type: Command
+    name: "SQLclのインストール"
+    command: |
+      echo "=== SQLclをインストール ==="
+      yum install -y sqlcl
+      echo "=== インストール完了 ==="
+      sql -version
+
+  - type: Command
+    name: "Walletのダウンロードと展開"
+    command: |
+      echo "=== Walletをダウンロード ==="
+      mkdir -p /tmp/wallet
+      oci db autonomous-database generate-wallet \
+        --autonomous-database-id ${ADB_OCID} \
+        --password "${WALLET_PASSWORD}" \
+        --file /tmp/wallet/wallet.zip \
+        --auth resource_principal
+
+      echo "=== Walletを展開 ==="
+      unzip -o /tmp/wallet/wallet.zip -d /tmp/wallet
+
+      echo "=== sqlnet.oraのパスを設定 ==="
+      sed -i 's|?/network/admin|/tmp/wallet|g' /tmp/wallet/sqlnet.ora
+
+      echo "=== ojdbc.propertiesをJKSパスワード付きで設定 ==="
+      printf 'javax.net.ssl.trustStore=/tmp/wallet/truststore.jks\n' > /tmp/wallet/ojdbc.properties
+      printf 'javax.net.ssl.trustStorePassword=%s\n' "${WALLET_PASSWORD}" >> /tmp/wallet/ojdbc.properties
+      printf 'javax.net.ssl.keyStore=/tmp/wallet/keystore.jks\n' >> /tmp/wallet/ojdbc.properties
+      printf 'javax.net.ssl.keyStorePassword=%s\n' "${WALLET_PASSWORD}" >> /tmp/wallet/ojdbc.properties
+      printf 'oracle.net.ssl_server_dn_match=true\n' >> /tmp/wallet/ojdbc.properties
+
+      echo "=== 設定内容を確認 ==="
+      cat /tmp/wallet/sqlnet.ora
+      echo "---"
+      cat /tmp/wallet/tnsnames.ora
+      echo "=== Wallet設定完了 ==="
+
+  - type: Command
+    name: "SQLclでETL処理を実行"
+    command: |
+      echo "=== SQLcl バージョン確認 ==="
+      sql -version
+
+      echo "=== SQLファイル一覧 ==="
+      ls -la ${OCI_PRIMARY_SOURCE_DIR}/sql/
+
+      echo "=== ETL処理を実行 ==="
+      export TNS_ADMIN=/tmp/wallet
+
+      # sql/ディレクトリ配下のSQLファイルをファイル名順に実行
+      for sqlfile in ${OCI_PRIMARY_SOURCE_DIR}/sql/*.sql; do
+        if [ -f "$sqlfile" ]; then
+          echo "--- 実行中: $(basename $sqlfile) ---"
+          sql -S "${DB_USER}/${DB_PASSWORD}@${DB_SERVICE}" @"$sqlfile"
+          exit_code=$?
+          if [ $exit_code -ne 0 ]; then
+            echo "ERROR: $(basename $sqlfile) の実行に失敗しました (exit code: $exit_code)"
+            SQL_EXIT_CODE=$exit_code
+            exit $exit_code
+          fi
+          echo "--- 完了: $(basename $sqlfile) ---"
+        fi
+      done
+
+      SQL_EXIT_CODE=0
+      echo "=== 全てのSQL実行が完了しました ==="
+
+  - type: Command
+    name: "Walletのクリーンアップ"
+    command: |
+      echo "=== Wallet情報をクリーンアップ ==="
+      rm -rf /tmp/wallet
+      echo "=== クリーンアップ完了 ==="

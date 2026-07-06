@@ -19,3 +19,4 @@ helm install keycloak codecentric/keycloakx -f values.yaml
 kubectl port-forward svc/keycloak 8080:80
 ```
 ブラウザで`http://localhost:8080`にアクセスして、Keycloakのダッシュボードにログインする。
+
