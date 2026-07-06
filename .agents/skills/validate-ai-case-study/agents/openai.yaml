@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI Case Study Validation"
+  short_description: "Analyze AI cases with evidence and implementation"
+  default_prompt: "Use $validate-ai-case-study to analyze a public AI case-study URL and complete the evidence-based validation workflow."
